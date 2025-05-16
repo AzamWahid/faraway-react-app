@@ -1,25 +1,50 @@
+import { useState } from 'react';
 import ItemList from './ItemList'
 
-function PackagingList() {
-  const itemsList = [
-    { item: 'Luggage', quantity: 2, isCompleted: false },
-    { item: 'Ehraam', quantity: 2, isCompleted: false },
-    { item: 'Slippers', quantity: 1, isCompleted: true },
-    { item: 'Hand Carry', quantity: 1, isCompleted: true },
-    { item: 'Passport', quantity: 1, isCompleted: false },
-    { item: 'Visa', quantity: 1, isCompleted: false },
-  ];
+function PackagingList({ packlist, setPackList }) {
+
+  const [sortOption, setSortOption] = useState('');
+
+
+  const clearAllHandler = () => {
+    setPackList([])
+  }
+
+  const handleSort = (option) => {
+    setSortOption(option);
+
+    console.log(option);
+
+    let copyOFActItems = [...packlist];
+
+    switch (option) {
+      case "description":
+        copyOFActItems = copyOFActItems.sort((a, b) => a.item.localeCompare(b.item));
+        break;
+      case "packed":
+        copyOFActItems = copyOFActItems.sort((a, b) => b.isCompleted - a.isCompleted);
+        break;
+      // case "inputOrder":
+      //   copyOFActItems = packlist;
+      //   break;
+      default:
+        break;
+
+    }
+
+    setPackList(copyOFActItems);
+  }
 
   return (
     <>
-      <ItemList itemsList={itemsList} />
+      <ItemList packlist={packlist} setPackList={setPackList} />
       <div id='buttons'>
-        <select>
-          <option value="">Sort by Input Order</option>
-          <option value="">Sort by Description</option>
-          <option value="">Sort by Packed</option>
+        <select value={sortOption} onChange={(e) => handleSort(e.target.value)}>
+          {/* <option value="inputOrder">Sort by Input Order</option> */}
+          <option value="description">Sort by Description</option>
+          <option value="packed">Sort by Packed</option>
         </select>
-        <button>Clear List</button>
+        <button onClick={clearAllHandler}>Clear List</button>
       </div>
     </>
   );
